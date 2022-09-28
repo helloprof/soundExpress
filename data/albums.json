@@ -1,15 +1,18 @@
 [{
+    "id": 1,
     "title": "Graduation",
     "artist": "Kanye West",
-    "year": "2007"
+    "year": 2007
 },
 {
+    "id":2,
     "title": "808s and Heartbreak",
     "artist": "Kanye West",
-    "year": "2008"
+    "year": 2008
 },
 {
+    "id":3,
     "title": "Thriller",
     "artist": "Michael Jackson",
-    "year": "1982"
+    "year": 1982
 }]

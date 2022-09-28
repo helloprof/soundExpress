@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "genre": "Hip-Hop"
+    },
+    {
+        "id": 2,
+        "genre": "Rock"
+    },
+    {
+        "id": 3,
+        "genre": "Pop"
+    }
+]
