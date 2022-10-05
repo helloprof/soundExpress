@@ -11,13 +11,13 @@ module.exports.initialize = () => {
       if (err) {
         reject(err)
       } else {
-        console.log(data)
+        // console.log(data)
         albums = JSON.parse(data)
         fs.readFile('./data/genres.json', 'utf8', (err, data) => {
           if (err) {
             reject(err)
           } else {
-            console.log(data)
+            // console.log(data)
             genres = JSON.parse(data)
             resolve("Success!")
           }
@@ -33,6 +33,23 @@ module.exports.getAlbums = () => {
       resolve(albums)
     } else {
       reject("no albums")
+    }
+  })
+}
+
+module.exports.getAlbumById = (id) => {
+  return new Promise((resolve, reject) => {
+    for(let i = 0; i < albums.length; i++) {
+      var album;
+      if (albums[i].id == id) {
+        album = albums[i]
+      }
+    }
+
+    if (album) {
+      resolve(album)
+    } else {
+      reject("Album not found!")
     }
   })
 }
