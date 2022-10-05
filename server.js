@@ -2,9 +2,25 @@ const express = require("express")
 const app = express()
 const path = require("path")
 
+const multer = require("multer");
+const cloudinary = require('cloudinary').v2
+const streamifier = require('streamifier')
+
+const env = require('dotenv')
+env.config()
+
 const soundService = require("./soundService")
 
-const HTTP_PORT = 8080
+const HTTP_PORT = process.env.PORT || 8080
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+  secure: true
+})
+
+const upload = multer() // no { storage: storage } 
 
 function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT + " 🚀🚀🚀")
@@ -25,6 +41,14 @@ app.get("/albums", (req, res) => {
   })
 })
 
+app.get("/albums/:id", (req, res) => {
+  soundService.getAlbumById(req.params.id).then((album) => {
+    res.json(album)
+  }).catch((err) => {
+    res.send(err)
+  })
+})
+
 app.get("/genres", (req, res) => {
   soundService.getGenres().then((genres) => {
     res.json(genres)
@@ -39,7 +63,7 @@ app.use((req, res) => {
 })
 
 soundService.initialize().then(() => {
-  app.listen(HTTP_PORT, onHttpStart);
+  app.listen(HTTP_PORT, onHttpStart)
 }).catch((err) => {
   console.log(err)
 })
