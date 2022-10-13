@@ -41,6 +41,51 @@ app.get("/albums", (req, res) => {
   })
 })
 
+
+app.get("/albums/new", (req, res) => {
+  res.sendFile(path.join(__dirname, "/views/albumForm.html"))
+})
+
+app.post("/albums/new", upload.single("albumCover"), (req, res) => {
+  if (req.file) {
+    let streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+        let stream = cloudinary.uploader.upload_stream(
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+    };
+
+    async function upload(req) {
+      let result = await streamUpload(req);
+      console.log(result);
+      return result;
+    }
+
+    upload(req).then((uploaded) => {
+      processPost(uploaded.url);
+    });
+  } else {
+    processPost("");
+  }
+
+  function processPost(imageUrl) {
+    req.body.albumCover = imageUrl;
+    soundService.addAlbum(req.body).then(() => {
+      res.redirect("/albums")
+    })
+  }
+
+})
+
 app.get("/albums/:id", (req, res) => {
   soundService.getAlbumById(req.params.id).then((album) => {
     res.json(album)
