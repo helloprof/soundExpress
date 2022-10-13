@@ -64,4 +64,12 @@ module.exports.getGenres = () => {
   })
 }
 
+module.exports.addAlbum = (album) => {
+  return new Promise((resolve, reject) => {
+      album.id = albums.length + 1
+      albums.push(album)
+      resolve()
+  })
+}
+
 
