@@ -1,0 +1,29 @@
+  <div class="container-fluid">
+    <h1>Albums</h1>
+    <div class="row">
+      {{#each data}}
+      <div class="col-sm-5">
+        <div class="card" style="width: 18rem;">
+          <img src="{{albumCover}}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{title}}</h5>
+            <h6 class="card-title">{{artist}}</h6>
+
+            <p class="card-text">{{year}}</p>
+            <a href="/albums/{{id}}" class="btn btn-primary">More Info</a>
+            {{#if genre}}
+            <a href="/albums?genre={{genre}}" class="btn btn-secondary">{{genre}}</a>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+      {{else}}
+        <div class="col-sm-5">
+        <div class="card" style="width: 18rem;">
+          <p>NO DATA</p>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  </div>
