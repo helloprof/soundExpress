@@ -11,6 +11,10 @@ env.config()
 
 const soundService = require("./soundService")
 
+const exphbs = require('express-handlebars')
+app.engine('.hbs', exphbs.engine({ extname: '.hbs' }))
+app.set('view engine', '.hbs')
+
 const HTTP_PORT = process.env.PORT || 8080
 
 cloudinary.config({
@@ -29,21 +33,37 @@ function onHttpStart() {
 app.use(express.static("public"))
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname,"/views/about.html"))
+  // res.sendFile(path.join(__dirname,"/views/about.html"))
+  res.redirect("/albums")
 })
 
 app.get("/albums", (req, res) => {
+  if (req.query.genre) {
+    soundService.getAlbumsByGenre(req.query.genre).then((genreAlbums) => {
+      res.render('albums', {
+        data: genreAlbums,
+        layout: 'main'
+      })
+    }).catch((err) => res.json({message: err})) 
+  } else {
   soundService.getAlbums().then((albums) => {
-    res.json(albums)
-  }).catch((err) => {
-    console.log(err)
-    res.send("there's been an error!")
-  })
+    res.render('albums', {
+      data: albums,
+      layout: 'main'
+    })
+  }).catch((err) => res.json({message: err}))
+  }
 })
 
 
 app.get("/albums/new", (req, res) => {
-  res.sendFile(path.join(__dirname, "/views/albumForm.html"))
+  // res.sendFile(path.join(__dirname, "/views/albumForm.html"))
+  soundService.getGenres().then((genres) => {
+    res.render('albumForm', {
+      data: genres,
+      layout: 'main'
+    })
+  })
 })
 
 app.post("/albums/new", upload.single("albumCover"), (req, res) => {
@@ -88,18 +108,26 @@ app.post("/albums/new", upload.single("albumCover"), (req, res) => {
 
 app.get("/albums/:id", (req, res) => {
   soundService.getAlbumById(req.params.id).then((album) => {
-    res.json(album)
+    var array = []
+    array.push(album)
+    res.render('albums', {
+      data: array,
+      layout: 'main'
+    })
   }).catch((err) => {
-    res.send(err)
+    res.json({message: err})
   })
 })
 
 app.get("/genres", (req, res) => {
   soundService.getGenres().then((genres) => {
-    res.json(genres)
+    res.render('genres', {
+      data: genres,
+      layout: 'main'
+    })
   }).catch((err) => {
     console.log(err)
-    res.send("there's been an error!")
+    res.json({message: err})
   })
 })
 
