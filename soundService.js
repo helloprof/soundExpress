@@ -72,4 +72,19 @@ module.exports.addAlbum = (album) => {
   })
 }
 
+module.exports.getAlbumsByGenre = (genreID) => {
+  return new Promise((resolve, reject) => {
+    var genreAlbums = []
+    for(let i = 0; i < albums.length; i++) {
+      if (albums[i].genre == genreID) {
+        genreAlbums.push(albums[i])
+      }
+    }
+    if (genreAlbums) {
+      resolve(genreAlbums)
+    } else {
+      reject("Albums not found for this genre!")
+    }
+  })
+}
 
