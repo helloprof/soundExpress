@@ -31,6 +31,7 @@ function onHttpStart() {
 }
 
 app.use(express.static("public"))
+app.use(express.urlencoded({ extended: true }))
 
 app.get("/", (req, res) => {
   // res.sendFile(path.join(__dirname,"/views/about.html"))
@@ -108,10 +109,10 @@ app.post("/albums/new", upload.single("albumCover"), (req, res) => {
 
 app.get("/albums/:id", (req, res) => {
   soundService.getAlbumById(req.params.id).then((album) => {
-    var array = []
-    array.push(album)
+    // var array = []
+    // array.push(album)
     res.render('albums', {
-      data: array,
+      data: album,
       layout: 'main'
     })
   }).catch((err) => {
@@ -128,6 +129,45 @@ app.get("/genres", (req, res) => {
   }).catch((err) => {
     console.log(err)
     res.json({message: err})
+  })
+})
+
+app.get("/genres/new", (req, res) => {
+  soundService.getGenres().then((genres) => {
+    res.render('genreForm', {
+      data: genres,
+      layout: 'main'
+    })
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
+
+app.get("/genres/delete/:id", (req, res) => {
+  soundService.deleteGenre(req.params.id).then(() => {
+    res.redirect("/genres")
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
+
+app.get("/albums/delete/:id", (req, res) => {
+  soundService.deleteAlbum(req.params.id).then(() => {
+    res.redirect("/albums")
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
+
+// app.use(express.urlencoded({ extended: true }))
+
+app.post("/genres/new", (req, res) => {
+  console.log(req.body)
+  soundService.addGenre(req.body).then(() => {
+    res.redirect("/genres")
   })
 })
 
