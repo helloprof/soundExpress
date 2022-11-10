@@ -1,0 +1,24 @@
+<div class="container-fluid">
+  <a href="/genres/new" class="btn btn-dark">New Genre</a>
+  </br>
+  <h1>Genres</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Genre</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+      <tr>
+        {{!-- <th scope="row">{{genreID}}</th> --}}
+        <td><a href="/albums?genre={{genreID}}" class="btn btn-warning">{{genreID}}</a></td>
+        <td><a href="/albums?genre={{genreID}}" class="btn btn-warning">{{genre}}</a></td>
+        <td><a href="/genres/delete/{{genreID}}" class="btn btn-danger">Delete</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
