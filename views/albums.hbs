@@ -1,6 +1,6 @@
   <div class="container-fluid">
+        <a href="/albums/new" class="btn btn-dark">New Album</a>
     <div class="row">
-    <a href="/albums/new" class="btn btn-dark">New Album</a>
       <h1>Albums</h1>
       </br>
       {{#each data}}
@@ -12,12 +12,13 @@
             <h6 class="card-title">{{artist}}</h6>
 
             <p class="card-text">{{year}}</p>
-            <a href="/albums/{{albumID}}" class="btn btn-primary">More Info</a>
+            <a href="/songs/{{albumID}}" class="btn btn-primary">Play</a>
             {{#if genreID}}
             <a href="/albums?genre={{genreID}}" class="btn btn-warning">{{genreID}}</a>
             {{/if}}
-            <a href="/albums/delete/{{albumID}}" class="btn btn-danger">Delete</a>
+            <a href="/albums/{{albumID}}" class="btn btn-secondary">More Info</a>
 
+            <a href="/albums/delete/{{albumID}}" class="btn btn-danger">Delete</a>
           </div>
         </div>
       </div>
