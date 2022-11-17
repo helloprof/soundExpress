@@ -171,6 +171,83 @@ app.post("/genres/new", (req, res) => {
   })
 })
 
+app.get("/songs/new", (req, res) => {
+  // res.sendFile(path.join(__dirname, "/views/albumForm.html"))
+  soundService.getAlbums().then((albums) => {
+    res.render('songForm', {
+      data: albums,
+      layout: 'main'
+    })
+  })
+})
+
+app.post("/songs/new", upload.single("songFile"), (req, res) => {
+  if (req.file) {
+    let streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+        let stream = cloudinary.uploader.upload_stream(
+          {resource_type: "video",
+          use_filename: true
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+    };
+
+    async function upload(req) {
+      let result = await streamUpload(req);
+      console.log(result);
+      return result;
+    }
+
+    upload(req).then((uploaded) => {
+      processPost(uploaded.url);
+    });
+  } else {
+    processPost("");
+  }
+
+  function processPost(songFileURL) {
+    req.body.songFile = songFileURL;
+    const currentAlbumID = req.body.albumID
+    soundService.addSong(req.body).then(() => {
+      res.redirect(`/songs/${currentAlbumID}`)
+    })
+  }
+
+})
+
+app.get("/songs/:albumID", (req, res) => {
+  soundService.getSongs(req.params.albumID).then((songs) => {
+    res.render('songs', {
+      data: songs,
+      layout: 'main'
+    })
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
+
+app.get("/songs/delete/:songID", (req, res) => {
+  soundService.deleteSong(req.params.songID).then(() => {
+    res.redirect("/albums")
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
+
+
+
 app.use((req, res) => {
   res.status(404).send("Page Not Found");
 })
