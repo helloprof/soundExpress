@@ -46,6 +46,18 @@ var Genre = sequelize.define('Genre', {
   genre: Sequelize.STRING,
 })
 
+// song model 
+var Song = sequelize.define('Song', {
+  songID: {
+    type: Sequelize.INTEGER,
+    primaryKey: true, 
+    autoIncrement: true
+  }, 
+  title: Sequelize.STRING, 
+  songFile: Sequelize.STRING
+})
+
+Song.belongsTo(Album, {foreignKey: 'albumID'})
 Album.belongsTo(Genre, {foreignKey: 'genreID'})
 
 
@@ -108,6 +120,7 @@ module.exports.addGenre = (genre) => {
       resolve()
     }).catch((err) => {
       console.log("GENRE CREATION ERROR! Error: "+err)
+      reject()
     })
   })
 }
@@ -119,6 +132,7 @@ module.exports.addAlbum = (album) => {
       resolve()
     }).catch((err) => {
       console.log("ALBUM CREATION ERROR! Error: "+err)
+      reject()
     })
   })
 }
@@ -149,6 +163,7 @@ module.exports.deleteAlbum = (albumID) => {
       resolve()
     }).catch((err) => {
       console.log("ALBUM DELETION ERROR! Error: "+err)
+      reject()
     })
   })
 }
@@ -164,7 +179,50 @@ module.exports.deleteGenre = (genreID) => {
       resolve()
     }).catch((err) => {
       console.log("GENRE DELETION ERROR! Error: "+err)
+      reject()
     })
   })
 }
 
+module.exports.getSongs = (albumID) => {
+  return new Promise((resolve, reject) => {
+    Song.findAll({
+      where: {
+        albumID: albumID
+      }
+    }).then((songs)=> {
+      resolve(songs)
+    }).catch((err) => {
+      console.log("CAN'T FIND SONGS BY THIS ALBUM ID! Error: "+err)
+      reject()
+    })
+  })
+}
+
+module.exports.addSong = (song) => {
+  return new Promise((resolve, reject) => {
+    Song.create(song).then(() => {
+      console.log("SONG CREATED!")
+      resolve()
+    }).catch((err) => {
+      console.log("SONG CREATION ERROR! Error: "+err)
+      reject()
+    })
+  })
+}
+
+module.exports.deleteSong = (songID) => {
+  return new Promise((resolve, reject) => {
+    Song.destroy({
+      where: {
+        songID: songID
+      }
+    }).then(() => {
+      console.log("SONG DELETED!")
+      resolve()
+    }).catch((err) => {
+      console.log("SONG DELETION ERROR! Error: "+err)
+      reject()
+    })
+  })
+}
