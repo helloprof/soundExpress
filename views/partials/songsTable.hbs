@@ -1,0 +1,33 @@
+<div class="container-fluid">
+  <a href="/songs/new" class="btn btn-dark">New Song</a>
+  </br>
+  <h1>Songs</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Album ID</th>
+        <th scope="col">Title</th>
+        <th scope="col">Play</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+      <tr>
+        <td><a href="/albums/{{albumID}}" class="btn btn-warning">{{albumID}}</a></td>
+        <td>{{title}}</td>
+        <td><audio controls>
+          <source src="{{songFile}}" type="audio/mpeg">
+        </audio>
+        </td>
+        <td><a href="/songs/delete/{{songID}}" class="btn btn-danger">Delete</a></td>
+
+      </tr>
+      {{else}}
+      <tr>
+        <td colspan="4">No Data Available</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
