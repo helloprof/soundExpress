@@ -67,10 +67,10 @@ let genres = []
 module.exports.initialize = () => {
   return new Promise((resolve, reject) => {
     sequelize.sync().then(() => {
-      console.log("DATABASE SYNC COMPLETE!")
+      console.log("POSTGRES DB SYNC COMPLETE!")
       resolve()
     }).catch((err) => {
-      console.log("DATABASE SYNC FAILED! Error: "+err)
+      console.log("POSTGRES DB SYNC FAILED! Error: "+err)
       reject()
     })
   })
