@@ -10,6 +10,7 @@ const env = require('dotenv')
 env.config()
 
 const soundService = require("./soundService")
+const userService = require("./userService")
 
 const exphbs = require('express-handlebars')
 app.engine('.hbs', exphbs.engine({ extname: '.hbs' }))
@@ -246,13 +247,34 @@ app.get("/songs/delete/:songID", (req, res) => {
   })
 })
 
+app.get("/register", (req, res) => {
+  res.render('registerForm', {
+    layout: 'main'
+  })
+})
 
+app.post("/register", (req, res) => {
+  console.log(req.body)
+  userService.registerUser(req.body).then((data) => {
+    console.log(data)
+    res.render('registerForm', {
+      successMessage: "User Created Successfully!"
+    })
+  }).catch((err) => {
+    console.log(err)
+    res.render('registerForm', {
+      errorMessage: "User Creation Error: "+err
+    })
+  })
+})
 
 app.use((req, res) => {
   res.status(404).send("Page Not Found");
 })
 
-soundService.initialize().then(() => {
+soundService.initialize()
+.then(userService.initialize)
+.then(() => {
   app.listen(HTTP_PORT, onHttpStart)
 }).catch((err) => {
   console.log(err)
