@@ -1,7 +1,8 @@
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-const env = require('dotenv')
+const env = require('dotenv');
+const bcrypt = require('bcryptjs');
 env.config()
 
 var userSchema = new Schema({
@@ -39,16 +40,23 @@ module.exports.registerUser = function(userData) {
         if(userData.password != userData.password2) {
             reject("PASSWORDS DO NOT MATCH!")
         } else {
-            let newUser = new User(userData); 
-            newUser.save().then(() => {
-                resolve()
+            bcrypt.hash(userData.password, 10).then((hash) => {
+                userData.password = hash
+                let newUser = new User(userData); 
+                newUser.save().then(() => {
+                    resolve()
+                }).catch((err) => {
+                    if (err.code == 11000) {
+                        reject("USERNAME IS TAKEN")
+                    } else {
+                        reject(err)
+                    }
+                })
             }).catch((err) => {
-                if (err.code == 11000) {
-                    reject("USERNAME IS TAKEN")
-                } else {
-                    reject(err)
-                }
+                console.log(err)
+                reject("ERROR WITH PASSWORD ENCRYPTION")
             })
+
         }
     })
 }
