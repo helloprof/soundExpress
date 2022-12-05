@@ -61,3 +61,43 @@ module.exports.registerUser = function(userData) {
     })
 }
 
+module.exports.loginUser = function(userData) {
+    return new Promise((resolve, reject) => {
+        User.findOne({username: userData.username})
+        .exec()
+        .then((user) => {
+            if(!user) {
+                reject("UNABLE TO FIND USER: "+ userData.username)
+            } else {
+                // if (userData.password == user.password)
+                bcrypt.compare(userData.password, user.password).then((result) => {
+                    if (result === true) {
+                        // session
+                        // loginHistory = []
+                        // push {} => [] = [{}]
+                        // push {} => [{}] = [{},{}]
+                        user.loginHistory.push({dateTime: new Date(), userAgent: userData.userAgent})
+                        
+                        // add to db
+                        User.updateOne({username: user.username}, {
+                            $set: {loginHistory: user.loginHistory}
+                        }).exec()
+                        .then(() => {
+                            resolve(user)
+                        }).catch((err) => {
+                            reject("ERROR UPDATING LOGIN HISTORY")
+                        })
+
+                    } else {
+                        reject("UNABLE TO AUTHENTICATE USER: "+userData.username)
+                    }
+                }).catch((err) => {
+                    reject("DECRYPTION ERROR")
+                })
+            }
+        }).catch((err) => {
+            reject("UNABLE TO FIND USER: "+ userData.username)
+        })
+    })
+}
+
