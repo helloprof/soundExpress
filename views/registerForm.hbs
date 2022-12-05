@@ -1,5 +1,6 @@
-  <h1>Register</h1>
   <div class="container-fluid">
+      <h1>Register</h1>
+
     {{#if errorMessage}}
     <div class="alert alert-danger" role="alert">
       <strong>ERROR:</strong>
@@ -25,7 +26,7 @@
         <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password">
       </div>
       </br>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-success">Register</button>
     </form>
     {{else}}
     <div class="alert alert-success" role="alert">
