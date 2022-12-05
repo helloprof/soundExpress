@@ -1,0 +1,23 @@
+<div class="container-fluid">
+  </br>
+  <h1>Login History for {{session.user.username}}</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">DateTime</th>
+        <th scope="col">UserAgent</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each session.user.loginHistory}}
+      <tr>
+        {{!-- <th scope="row">{{genreID}}</th> --}}
+        <td>{{dateTime}}</td>
+        <td>{{userAgent}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+      <a href="/logout" class="btn btn-danger">Logout</a>
+
+</div>
